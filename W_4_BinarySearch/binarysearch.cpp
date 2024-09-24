@@ -1,11 +1,11 @@
 
-bool binarySearch(std::vector<int> v, int minIndex, int maxIndex, int itemSearch)
+bool binarySearch(const std::vector<int>& v, int minIndex, int maxIndex, int itemSearch)
 {
 		if(minIndex > maxIndex){
 			return false;		
 		}
 		
-		middleIndex = maxIndex + minIndex / 2;
+		middleIndex = (maxIndex + minIndex) / 2;
 
 		if(v.at(middleIndex) == itemSearch){
 			return true;
