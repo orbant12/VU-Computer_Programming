@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 
-bool behindColTest(const int N, const std::vector< std::vector<bool> >& board, int row, unsigned int i)
+bool behindColTest(const int N, const std::vector< std::vector<bool> >& board, int row, unsigned int column)
 {    
     for (int j = 0; j < row; ++j){
-        bool currVal = board.at(j).at(i);
+        bool currVal = board.at(j).at(column);
         if(currVal){
             return false;
         }
@@ -13,15 +13,15 @@ bool behindColTest(const int N, const std::vector< std::vector<bool> >& board, i
     return true;
 }
 
-bool behindRightSideTest(const int N, const std::vector< std::vector<bool> >& board, int row, unsigned int i)
+bool behindRightSideTest(const int N, const std::vector< std::vector<bool> >& board, int row, unsigned int column)
 {
     for (int j = row; j >= 0; --j){
-        bool currVal = board.at(j).at(i);
+        bool currVal = board.at(j).at(column);
         if(currVal){
             return false;
         }
-        if(i < N){
-            ++i;
+        if(column < N){
+            ++column;
         }else {
             break;
         }
@@ -31,15 +31,15 @@ bool behindRightSideTest(const int N, const std::vector< std::vector<bool> >& bo
 }
 
 
-bool behindLeftSideTest(const int N, const std::vector< std::vector<bool> >& board, int row, unsigned int i)
+bool behindLeftSideTest(const int N, const std::vector< std::vector<bool> >& board, int row, unsigned int column)
 {
     for (int j = row; j >= 0; --j){
-        bool currVal = board.at(j).at(i);
+        bool currVal = board.at(j).at(column);
         if(currVal){
             return false;
         }
-        if(i > 0){
-            --i;
+        if(column > 0){
+            --column;
         }else {
             break;
         }
@@ -48,53 +48,44 @@ bool behindLeftSideTest(const int N, const std::vector< std::vector<bool> >& boa
     return true;
 }
 
-bool placeQueens(int N, std::vector < std::vector <bool> >& board, int row){
-    unsigned int i; // column
+bool placeQueens(int N, std::vector < std::vector <bool> >& board, int row)
+{
+    unsigned int column;
 
     if(row == N){
         return true;
     }
 
-    for (i = 0; i < N; ++i){
-        bool behindTestResult = behindColTest(N, board, row, i);
-        bool leftTestResult = behindLeftSideTest(N, board, row, i);
-        bool rightTestResult = behindRightSideTest(N, board, row, i);
+    for (column = 0; column < N; ++column){
+        bool behindTestResult = behindColTest(N, board, row, column);
+        bool leftTestResult = behindLeftSideTest(N, board, row, column);
+        bool rightTestResult = behindRightSideTest(N, board, row, column);
 
         if(behindTestResult && leftTestResult && rightTestResult){
-            board.at(row).at(i) = true;
+            board.at(row).at(column) = true;
             bool response = placeQueens(N, board, row + 1);
             if(response){
                 return true;
             }
             // Backtracking if fails
-            board.at(row).at(i) = false;
+            board.at(row).at(column) = false;
         }
     }
 
     return false;
 }
 
-int main() {
-
-    int nQueens;
-    std::cout << "How many queens to place on the board?" << std::endl;
-    std::cin >> nQueens;
-
-    if( !(nQueens > 0) ){
-        std::cout << "error: invalid input";
-        return 0;
-    }
-
-    std::vector< std::vector<bool> > chessBoard;
-
-    for (int i = 0; i < (nQueens * nQueens); ++i){
+void createChessBoard(std::vector< std::vector<bool> >& chessBoard, const int& nQueens)
+{
+  for (int i = 0; i < (nQueens * nQueens); ++i) {
         std::vector<bool> chessRow(nQueens * nQueens,false);
         chessBoard.push_back(chessRow);
     }
+}
 
-    bool res = placeQueens(nQueens, chessBoard, 0);
-
-    if (!res) {
+void printResult(const bool& placingResponse, const int& nQueens, const std::vector< std::vector<bool> >& chessBoard)
+{
+    if (!placingResponse) {
         std::cout << "No solution found to place " << nQueens << " queens on a " << nQueens << " by " << nQueens << " chess board" << std::endl;
     } else {
         for (int i = 0; i < nQueens; ++i) {
@@ -105,6 +96,25 @@ int main() {
             std::cout << std::endl;
         }
     }
+}
+
+int main() 
+{
+    int nQueens;
+    std::cout << "How many queens to place on the board?" << std::endl;
+    std::cin >> nQueens;
+    std::vector< std::vector<bool> > chessBoard;
+
+    if( !(nQueens > 0) ){
+        std::cout << "error: invalid input";
+        return 0;
+    }
+
+    createChessBoard(chessBoard, nQueens);
+
+    bool placingResponse = placeQueens(nQueens, chessBoard, 0);
+
+    printResult(placingResponse, nQueens, chessBoard);
 
     return 0;
 }
