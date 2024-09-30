@@ -1,40 +1,61 @@
-#include <vector>
+#include <stack>
+#include <iostream>
 
-template <typename T>
-bool binarySearch(const std::vector<T>& v, int minIndex, int maxIndex, T& searchValue)
-{
-    if (minIndex > maxIndex) {
-        return false;
+template<typename T>
+void storedToSorted(std::stack<T>& s, T num) {
+    if (s.empty() || s.top() >= num) {  // Changed <= to >=
+        s.push(num);
+        return;
     }
+    
+    T top = s.top();
+    s.pop();
+    
+    storedToSorted(s, num);
+    s.push(top);
+}
 
-    int middleIndex = (maxIndex + minIndex) / 2;
-
-    if (searchValue == v.at(middleIndex)) {
-        return true;
-    } else {
-        if (searchValue > v.at(middleIndex)) {
-            return binarySearch(v, middleIndex + 1, maxIndex, searchValue);
-        } else {
-            return binarySearch(v, minIndex, middleIndex - 1, searchValue);
-        }
+template<typename T>
+void sortAStack(std::stack<T>& s) {
+    if (s.size() < 2) {
+        return;
     }
+    
+    T top = s.top();
+    s.pop();
+    
+    sortAStack(s);
+    storedToSorted(s, top);
+}
+
+// Helper function to print a stack
+template<typename T>
+void printStack(std::stack<T> s) {
+    std::stack<T> temp;
+    while (!s.empty()) {
+        temp.push(s.top());
+        s.pop();
+    }
+    while (!temp.empty()) {
+        std::cout << temp.top() << " ";
+        temp.pop();
+    }
+    std::cout << std::endl;
 }
 
 int main() {
-    // Test with int
-    std::vector<int> intVec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int intSearchValue = 5;
-    bool intResult = binarySearch(intVec, 0, intVec.size() - 1, intSearchValue);
+    std::stack<int> s;
+    s.push(0);
+    s.push(-3);
+    s.push(42);
     
-    // Test with double
-    std::vector<double> doubleVec = {1.1, 2.2, 3.3, 4.4, 5.5};
-    double doubleSearchValue = 3.3;
-    bool doubleResult = binarySearch(doubleVec, 0, doubleVec.size() - 1, doubleSearchValue);
+    std::cout << "Original stack: ";
+    printStack(s);
     
-    // Test with string
-    std::vector<std::string> stringVec = {"apple", "banana", "cherry", "date", "fig"};
-    std::string stringSearchValue = "cherry";
-    bool stringResult = binarySearch(stringVec, 0, stringVec.size() - 1, stringSearchValue);
-
+    sortAStack(s);
+    
+    std::cout << "Sorted stack: ";
+    printStack(s);
+    
     return 0;
 }
