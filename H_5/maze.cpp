@@ -69,20 +69,24 @@ private:
     int columns;
     std::stack<std::vector<int> > mazeStack;
     std::vector<std::vector<Coordinate> > maze;
+    void generateMazeCoordinates();
 
     std::vector<std::vector<int> > generateOptions(int& row, int& col);
-    bool findPath(int x, int y, int tx, int ty);
     void removeSide(int& currX, int& currY, int& newX, int& newY);
     std::vector<Coordinate> createConnectionsVector(int& fromX, int& fromY);
 };
 
-Maze::Maze(int inputRows, int inputColumns){
-    rows = inputRows;
-    columns = inputColumns;
-    for (int i = 0; i < rows; ++i) {
+Maze::Maze(int rows, int columns){
+    this-> rows = rows;
+    this-> columns = columns;
+    generateMazeCoordinates();
+}
+
+void Maze::generateMazeCoordinates() {
+    for (int x = 0; x < this-> rows; ++x) {
         std::vector<Coordinate> row;
-        for (int j = 0; j < columns; ++j) {
-            row.push_back(Coordinate(i, j));
+        for (int y = 0; y < this-> columns; ++y) {
+            row.push_back(Coordinate(x, y));
         }
         maze.push_back(row);
     }
@@ -101,12 +105,12 @@ std::vector<std::vector<int> > Maze::generateOptions(int& row, int& col) {
         options.push_back(currPositonV);
     }
     
-    if (row + 1 < rows && !maze.at(row + 1).at(col).getVisited()) {
+    if (row + 1 < this -> rows && !maze.at(row + 1).at(col).getVisited()) {
         std::vector<int> currPositonV = {row + 1, col};
         options.push_back(currPositonV);
     }
     
-    if (col + 1 < columns && !maze.at(row).at(col + 1).getVisited()) {
+    if (col + 1 < this -> columns && !maze.at(row).at(col + 1).getVisited()) {
         std::vector<int> currPositonV = {row, col + 1};
         options.push_back(currPositonV);
     }
@@ -178,11 +182,11 @@ std::vector<Coordinate> Maze::createConnectionsVector(int& fromX, int& fromY)
         options.push_back(maze.at(fromX - 1).at(fromY));
     }
 
-    if (maze.at(fromX).at(fromY).getConnectRight() && fromY + 1 < columns) {
+    if (maze.at(fromX).at(fromY).getConnectRight() && fromY + 1 < this-> columns) {
         options.push_back(maze.at(fromX).at(fromY + 1));
     }
 
-    if (maze.at(fromX).at(fromY).getConnectBottom() && fromX + 1 < rows) {
+    if (maze.at(fromX).at(fromY).getConnectBottom() && fromX + 1 < this-> rows) {
         options.push_back(maze.at(fromX + 1).at(fromY));
     }
     
@@ -199,8 +203,8 @@ bool Maze::findPath(Coordinate from, Coordinate to)
     int fromY = from.at(POSITION_Y);
 
     if(fromX == 0 && fromY == 0){
-        for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < columns; ++col) {
+        for (int row = 0; row < this-> rows; ++row) {
+            for (int col = 0; col < this-> columns; ++col) {
                 maze.at(row).at(col).setVisited(false);
                 maze.at(row).at(col).setPartOf(false);
             }
@@ -236,12 +240,12 @@ bool Maze::findPath(Coordinate from, Coordinate to)
 
 int Maze::getColumns() 
 {
-    return columns;
+    return this-> columns;
 }
 
 int Maze::getRows() 
 {
-    return rows;
+    return this-> rows;
 }
 
 bool Maze::hasConnectionToTheRightNeighbour(int row, int col) 
