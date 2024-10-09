@@ -262,3 +262,14 @@ bool Maze::isPartOfPath(int row, int col)
 {
     return maze.at(row).at(col).getPartOf();
 }
+
+
+
+
+
+
+
+
+
+
+
