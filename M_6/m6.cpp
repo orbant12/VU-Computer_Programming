@@ -1,4 +1,4 @@
-class MyVector{
+lass MyVector{
     public:
         MyVector();
         // creates an empty vector
@@ -54,16 +54,20 @@ int& MyVector::at(int index)
 
 void MyVector::resize(int newSize)
 {   
+    if (newSize < 0) {
+        throw std::out_of_range("MyVector::resize");
+    }
+
     int nForCopy;
     int nForEmpty;
 
     int* newArray = new int[newSize];
 
-    if(allocatedSize > newSize){
+    if(allocatedSize < newSize){
         nForCopy = allocatedSize;
-        nForEmpty = allocatedSize - newSize;
+        nForEmpty = newSize - allocatedSize;
     } else {
-        nForCopy = newSize - allocatedSize;
+        nForCopy = allocatedSize - newSize;
         nForEmpty = 0;
     }
 
@@ -78,6 +82,6 @@ void MyVector::resize(int newSize)
     delete[] data;
 
     data = newArray;
-    allocatedSize = newSize;
-    allocatedSize = (allocatedSize < newSize) ? allocatedSize : newSize;
+    allocatedSize = nForCopy + nForEmpty;
+
 }
