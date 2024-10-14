@@ -137,7 +137,7 @@ std::vector<int> BST::inOrder()
     std::vector<int> v;
 
     if(headNode == nullptr){
-       return v;
+        return v;
     }
     
     inorderTraversal(v, headNode);
@@ -146,9 +146,7 @@ std::vector<int> BST::inOrder()
 }
 
 int BST::recursiveHeight(Node* headNode) {
-    if (headNode == nullptr) {
-        return 0;
-    }
+    if (headNode == nullptr) { return 0; }
 
     int leftHeight = recursiveHeight(headNode->getLeft());
     int rightHeight = recursiveHeight(headNode->getRight());
@@ -157,10 +155,7 @@ int BST::recursiveHeight(Node* headNode) {
 }
 
 int BST::getHeight() {
-    if (headNode == nullptr) {
-        return 0;
-    }
-
+    if (headNode == nullptr) { return 0;}
     return recursiveHeight(headNode);
 }
 
